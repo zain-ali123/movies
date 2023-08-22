@@ -44,8 +44,8 @@ export default {
     },
     methods: {
         ...mapActions({auth:'authenticateUser'}),
-        authenticateUser() {
-            this.auth(this.formData)
+        async authenticateUser() {
+            await this.auth(this.formData)
             console.log('Authentication data:', this.formData);
         }
     }

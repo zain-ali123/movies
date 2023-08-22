@@ -28,17 +28,10 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    // async createMovies(_,payload){
-    //   try {
-    //       console.log('payload in createMovies action ',payload)
-    //       const {data} = await axios.post('http://localhost:3001/movies',payload)
-    //     }
-    //     catch(error){
-    //     }
-    // },
+
      async createMovies(_, payload) {
       try {
-        const token = this.state.token;
+        const token = this.state.movies.token;
         console.log('token---->', token)
         const config = {
           headers: {
@@ -52,26 +45,50 @@ export default new Vuex.Store({
         console.error('Error creating movie:', error);
       }
     },
-    // async fetchMovies({ commit }) {
-    //   try {
-    //     const token = this.state.token;
-    //     console.log('token----> in fetchMoives', token)
-    //     const config = {
-    //       headers: {
-    //         'x-access-token': `Bearer ${token}`,
-    //         'Content-Type': 'application/json'
-    //       }
-    //     };
-    //     const { data } = await axios.post('http://localhost:3001/movies',  config)
-    //     console.log('response in action fechMovies : ',data)
-    //     commit('SET_MOVIE_LIST', data);
-    //   } catch (error) {
-    //     console.error('Error fetching movies:', error);
-    //   }
-    // },
+    async updateMovies({commit}, { obj, payload }) {
+      console.log('idObj: ', obj)
+      console.log('id: ',obj.id)
+      console.log('PAyloaad : ',payload)
+      try {
+        const token = this.state.movies.token;
+        // console.log('token---->', token)
+        const config = {
+          headers: {
+            'x-access-token': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+
+        };
+        const { data } = await axios.put(`http://localhost:3001/movies/${obj.id}`, payload, config);
+        console.log('Movie updated:', data.data.movies);
+        commit('SET_MOVIE_LIST', data.data.movies)
+      } catch (error) {
+        console.error('Error creating movie:', error);
+      }
+    },
+    async deleteMovie({ commit }, payload) {
+      console.log('paylod id in action',payload.id)
+      try {
+        const token = this.state.movies.token;
+        // console.log('token---->', token)
+        const config = {
+          headers: {
+            'x-access-token': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+
+        };
+        const { data } = await axios.delete(`http://localhost:3001/movies/${payload.id}`, config);
+        console.log('Movie updated:', data.data.movies);
+        commit('SET_MOVIE_LIST', data.data.movies)
+      } catch (error) {
+        console.error('Error creating movie:', error);
+      }
+    },
        async fetchMovies({ commit }) {
       try {
-        const token = this.state.token;
+        
+        const token = this.state.movies.token;
         console.log('token in the fetch----> ', token)
         const config = {
           headers: {
@@ -80,7 +97,7 @@ export default new Vuex.Store({
           }
         };
         const { data } = await axios.get('http://localhost:3001/movies',config);
-        console.log( data)
+        console.log('data in action: (looking for _id) ', data)
         commit('SET_MOVIE_LIST', data.data.movies);
       } catch (error) {
         console.error('Error fetching movies:', error);
@@ -99,10 +116,10 @@ export default new Vuex.Store({
       try {
         const { data } = await axios.post('http://localhost:3001/users/authenticate', payload);
         // console.log('data is action : ',data.data.token)
-        this.state.token=data.data.token
+        this.state.movies.token=data.data.token
         console.log('Data in action >>>>',data);
         // console.log(this.state.token)
-        axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.token}`;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.movies.token}`;
         axios.defaults.headers.common['Content-Type'] = 'application/json';
         console.log(axios.defaults.headers)
         
