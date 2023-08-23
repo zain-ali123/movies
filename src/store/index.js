@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import axios from 'axios';
 
+
 export default new Vuex.Store({
   state: {
     movies: {
@@ -10,6 +11,9 @@ export default new Vuex.Store({
     },
     users: {
     },
+    Messsage: null,
+    userId:null
+   
   },
   getters: {
     getMovieList(state) {
@@ -104,29 +108,48 @@ export default new Vuex.Store({
       }
     },
     async registerUser(_, payload) {
+      this.state.Messsage = null
+      
       try {
         console.log('payload in vuex ',payload)
-        const { data } = await axios.post('http://localhost:3001/users/register', payload);
+        const { data} = await axios.post('http://localhost:3001/users/register', payload);
         console.log(data);
+        this.state.Messsage = data.msg
+        console.log(' message in store : ',data.msg)
       } catch (error) {
         console.error('Error registering user:', error);
+         this.state.Messsage = error.response.data.errors
       }
     },
     async authenticateUser(_, payload) {
+      this.state.userId=null
+      this.state.Messsage = null
       try {
         const { data } = await axios.post('http://localhost:3001/users/authenticate', payload);
-        // console.log('data is action : ',data.data.token)
+        this.state.userId=data.data.user._id
+        console.log('user id is : ', this.state.userId)
+        
+        this.state.Messsage = data.message
+        
+        // console.log(this.state.Messsage)
+        // console.log('data is action : ',data)
         this.state.movies.token=data.data.token
-        console.log('Data in action >>>>',data);
+        // console.log('Data in action >>>>',data);
         // console.log(this.state.token)
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.movies.token}`;
         axios.defaults.headers.common['Content-Type'] = 'application/json';
-        console.log(axios.defaults.headers)
+        // console.log(axios.defaults.headers)
         
       } catch (error) {
         console.error('Error authenticating user:', error);
       }
     },
+    async updatePassword(_, payload) {
+      console.log('payload in acton ChngePAss : ',payload)
+      const { data } = await axios.put(`http://localhost:3001/users/${payload.id}`, payload)
+      console.log('Data in updatePAssword',data)
+    }
   },
+
   modules: {},
 });

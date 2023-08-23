@@ -1,15 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
+import HomeView from '../views/HomeView.vue'
 import LoginUser from '../components/LoginUser.vue'
 import UserView from '../views/UserView.vue'
 import AddMovies from '../components/AddMovies.vue'
 import ListAllMovies from '../components/ListAllMovies.vue'
-
+import ChangePassword from '../components/ChangePassword.vue'
 const routes = [
   {
     path: '/',
     name: 'login',
     component: LoginUser
+  },
+    {
+    path: '/home',
+    name: 'home',
+    component: HomeView
+  },
+      {
+    path: '/changePassword',
+    name: 'changePassword',
+    component: ChangePassword
   },
     {
     path: '/register',
@@ -21,7 +31,7 @@ const routes = [
     name: 'add',
     component: AddMovies
   },
-    {
+  {
     path: '/all',
     name: 'all',
     component: ListAllMovies
